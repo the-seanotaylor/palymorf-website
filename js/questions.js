@@ -1,0 +1,122 @@
+const DOMAINS = [
+  {
+    id: 'time',
+    eye: 'Domain 1 — Time',
+    title: 'Time',
+    color: '#B8A06A',
+    desc: 'How well you protect, direct, and reclaim your most valuable and non-renewable asset — and whether your actions actually reflect what you say you value.',
+    questions: [
+      { text: 'When you are honest with yourself, which do you protect more fiercely in your daily decisions — your time or your money?', sub: 'There is no right answer. This question reveals the gap between what you value and how you actually behave.', anchor: true, labels: ['Money, always', 'Usually money', 'About equal', 'Usually time', 'Time, always'] },
+      { text: 'When given the choice between a higher-paying opportunity requiring more time versus a lower-paying one that protects your freedom, I consistently choose freedom.', sub: 'This is the behavior behind the values question above. Actions reveal more than intentions.', anchor: true, labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have calculated — even roughly — what my time is worth per hour and I use that number to make decisions.', sub: 'Wealthy people who undervalue their time make expensive trade-offs without realizing it.', anchor: true, labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I am currently spending meaningful time on activities I could pay someone else to do for a fraction of what my time is worth.', sub: 'This is the most common hidden tax on high earners — doing $20/hour tasks with $500/hour time.', anchor: true, labels: ['Constantly', 'Often', 'Sometimes', 'Rarely', 'Never'] },
+      { text: 'I am in control of how I spend the majority of my day.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I regularly say no to requests, meetings, or commitments that do not align with my priorities.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have clear boundaries between work time and personal time — and I enforce them.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I rarely feel like I am reacting to other people\'s agendas rather than executing my own.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I delegate tasks consistently and trust others to handle them without my constant oversight.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I know exactly which activities in my week generate the most value — and I protect that time.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I take at least one full day per week completely disconnected from work obligations.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I am able to be fully present during personal time without mentally drifting to work.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I feel that I have adequate time for the experiences, relationships, and activities I actually want in my life.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'The people around me — family, friends, staff — would say I am genuinely available to them.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'If I could not earn more money by working more hours, I would be satisfied with how I currently spend my time.', labels: ['Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree'] }
+    ]
+  },
+  {
+    id: 'wealth',
+    eye: 'Domain 2 — Wealth',
+    title: 'Wealth',
+    color: '#185FA5',
+    desc: 'How intelligently and actively your money is working — and whether your financial systems are aligned with the life you want to live, not just a number you are trying to hit.',
+    questions: [
+      { text: 'I have a clear picture of my net worth and how it is changing month over month.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My income is growing and I have a deliberate strategy for continuing to increase it.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have multiple streams of income beyond my primary salary or business.', labels: ['None', '1 additional', '2 additional', '3 additional', '4 or more'] },
+      { text: 'My investments are actively working for me — not sitting idle in low-yield or default accounts.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I understand every investment I own well enough to explain it clearly to someone else.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have a proactive tax strategy — my advisor brings ideas to me, not just files my return.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have adequate liquidity — a major unexpected expense would not create financial stress.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My real estate holdings, if any, are performing assets that generate returns without consuming my time.', labels: ['N/A', 'Major drain', 'Neutral', 'Performing', 'Fully passive'] },
+      { text: 'I have a clear plan for how I will build and preserve wealth over the next five to ten years.', labels: ['No plan', 'Vague idea', 'Some clarity', 'Clear plan', 'Detailed strategy'] },
+      { text: 'I am investing in or have a strategy to access pre-IPO, private equity, or early-stage opportunities.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Actively'] },
+      { text: 'My estate planning is current — will, beneficiaries, and asset structure are intentional and up to date.', labels: ['None', 'Outdated', 'Partial', 'Mostly done', 'Fully current'] },
+      { text: 'I feel confident my current financial trajectory will give me the freedom I want within five years.', labels: ['Not at all', 'Unlikely', 'Uncertain', 'Likely', 'Very confident'] },
+      { text: 'I am not emotionally attached to any underperforming assets — I can exit what is not working.', labels: ['Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree'] },
+      { text: 'My financial advisors are proactive and bring ideas to me — they are not just order-takers.', labels: ['No advisor', 'Order-taker', 'Reactive', 'Proactive sometimes', 'Always proactive'] },
+      { text: 'My wealth-building strategy is designed around the life I want — not just a number on a spreadsheet.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] }
+    ]
+  },
+  {
+    id: 'identity',
+    eye: 'Domain 3 — Identity',
+    title: 'Identity',
+    color: '#0F6E56',
+    desc: 'How aligned you are with who you are becoming — and whether your inner life matches the outer success you have built.',
+    questions: [
+      { text: 'I have a clear sense of who I am becoming — not just what I have achieved.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'The way I spend my time reflects what I actually value most.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I feel that my personal and professional identities are aligned — not in conflict.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I am not defined by my title, income, or status — I know who I am without those things.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I regularly reflect on my values and whether my decisions are consistent with them.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I feel genuinely proud of the person I am — not just the results I produce.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have a clear vision of what my ideal life looks like in five years — emotionally, not just financially.', labels: ['No vision', 'Very vague', 'Some clarity', 'Clear vision', 'Vivid and detailed'] },
+      { text: 'I am not living someone else\'s definition of success — I have defined it entirely for myself.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I feel creatively expressed — I have a meaningful outlet for ideas, vision, and self-expression.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I am comfortable with uncertainty and change — I do not need external validation to feel secure.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have processed and moved beyond major past failures or regrets that used to hold me back.', labels: ['Not at all', 'Slightly', 'Partially', 'Mostly', 'Fully'] },
+      { text: 'I feel excited about who I am becoming — not just nostalgic about what I have already built.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My closest relationships reflect and support who I am becoming — not just who I used to be.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I feel aligned between my public persona and my private self — I am not performing a version of myself.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have a sense of purpose that goes beyond financial achievement or professional success.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] }
+    ]
+  },
+  {
+    id: 'systems',
+    eye: 'Domain 4 — Systems',
+    title: 'Systems',
+    color: '#8C6E2F',
+    desc: 'How well your life, assets, household, and operations run — with or without your constant presence and effort.',
+    questions: [
+      { text: 'My household runs smoothly and predictably without requiring my daily intervention.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My staff, if any, operate effectively and proactively — they do not wait to be told what to do.', labels: ['N/A', 'Never', 'Rarely', 'Sometimes', 'Always'] },
+      { text: 'My properties and assets are managed in a way that generates value without consuming my energy.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My financial accounts, bills, and recurring expenses are automated and well organized.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have documented processes for recurring tasks — I am not reinventing the wheel repeatedly.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My professional work continues to function when I am completely unavailable for a week.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have a trusted vendor and partner network I can call on when something needs to be handled.', labels: ['None', 'Very limited', 'Some', 'Good network', 'Strong network'] },
+      { text: 'My digital life is organized — files, emails, and information are accessible and not chaotic.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have a clear decision-making framework — I do not agonize over choices that should be routine.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My health and wellness routines are systematized — sleep, exercise, and nutrition are consistent.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I know which systems in my life are broken or underperforming and I have a plan to address them.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My life does not feel held together by my personal effort alone — there are real structures supporting it.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I regularly audit my life and eliminate systems, habits, or commitments that no longer serve me.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'Time away — travel, illness, or disconnection — does not cause my life to fall apart.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'The infrastructure of my life is working for me — not demanding constant attention from me.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] }
+    ]
+  },
+  {
+    id: 'relationships',
+    eye: 'Domain 5 — Relationships',
+    title: 'Relationships',
+    color: '#533BAA',
+    desc: 'The quality, intentionality, and depth of the relationships that shape your life — personal, professional, and familial.',
+    questions: [
+      { text: 'My closest relationships are deeply nourishing — they energize rather than drain me.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have at least two or three people in my life I can be completely honest with — no performance required.', labels: ['None', 'One person', 'Two people', 'Three people', 'Four or more'] },
+      { text: 'My marriage or primary partnership, if applicable, is a genuine source of connection and strength.', labels: ['N/A', 'Major struggle', 'Challenging', 'Mostly good', 'Deeply strong'] },
+      { text: 'My children, if applicable, know me as a present and engaged parent — not just a provider.', labels: ['N/A', 'They wouldn\'t', 'Unlikely', 'Mostly yes', 'Absolutely yes'] },
+      { text: 'I have intentionally built a peer group of people who challenge me to grow.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'The people around me are not primarily there because they need something from me — there is genuine reciprocity.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I have a mentor or advisor whose perspective I trust and regularly seek out.', labels: ['None', 'Rarely seek', 'Sometimes', 'Often', 'Regularly'] },
+      { text: 'I am comfortable ending or distancing from relationships that are consistently draining or misaligned.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'The people I spend the most time with reflect the values and the life I am building.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I invest in my relationships intentionally — I do not leave them on autopilot.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'I feel genuinely known by the people closest to me — not just respected or admired from a distance.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] },
+      { text: 'My professional network is strong enough that I could call on it for meaningful support today.', labels: ['Not at all', 'Weak', 'Moderate', 'Strong', 'Very strong'] },
+      { text: 'I do not feel lonely inside my success — I have enough depth in my relationships to feel genuinely connected.', labels: ['Never true', 'Rarely true', 'Sometimes true', 'Often true', 'Always true'] },
+      { text: 'I am actively preparing my family or the next generation, if applicable, for the wealth and responsibility they will inherit.', labels: ['N/A', 'Not at all', 'Thinking about it', 'Taking some steps', 'Actively doing it'] },
+      { text: 'The quality of my relationships genuinely reflects the quality of the life I am trying to build.', labels: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'] }
+    ]
+  }
+];

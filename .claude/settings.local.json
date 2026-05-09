@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C C:/Projects/palymorf-website/palymorf status)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:api.github.com)"
+    ]
+  }
+}
