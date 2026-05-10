@@ -46,9 +46,7 @@ if ('IntersectionObserver' in window) {
 
 /* Nav buttons */
 const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
 if (prevBtn) prevBtn.addEventListener('click', prevDomain);
-if (nextBtn) nextBtn.addEventListener('click', nextDomain);
 
 /* Contact form */
 function handleFormSubmit(e) {
