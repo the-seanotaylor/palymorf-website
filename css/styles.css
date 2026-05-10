@@ -474,3 +474,75 @@ footer { padding: 2.5rem 3rem; border-top: 0.5px solid rgba(184,160,106,0.15); }
   .q-scale { gap: 4px; }
   .q-lbl { font-size: 8px; }
 }
+
+/* ── GATE FORM ──────────────────────────────── */
+.gate-form { margin-top: 0; }
+.gate-intro { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 1.25rem; line-height: 1.65; }
+.gate-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+.gate-field-group { display: flex; flex-direction: column; gap: 6px; }
+.gate-field-group label { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; }
+.gate-field-group input {
+  font-family: var(--sans); font-size: 14px; color: var(--ink);
+  background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.15);
+  border-radius: 2px; padding: 11px 14px; outline: none;
+  transition: border-color 0.15s; color: #fff;
+}
+.gate-field-group input::placeholder { color: rgba(255,255,255,0.25); }
+.gate-field-group input:focus { border-color: var(--gold); }
+.gate-privacy { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 0.75rem; text-align: center; }
+.assess-user-bar { }
+
+@media (max-width: 480px) {
+  .gate-fields { grid-template-columns: 1fr; }
+}
+
+/* ── CAPTURE MODAL ──────────────────────────── */
+.capture-modal {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  background: rgba(26,24,20,0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.capture-card {
+  background: var(--ink); width: 100%; max-width: 480px;
+  border: 0.5px solid rgba(184,160,106,0.3); border-radius: 4px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 60px rgba(0,0,0,0.4);
+  animation: fadeUp 0.3s ease both;
+}
+.capture-eye {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold); font-weight: 500; margin-bottom: 0.75rem;
+}
+.capture-title {
+  font-family: var(--serif); font-size: 26px; font-weight: 300;
+  color: #fff; margin-bottom: 0.75rem; line-height: 1.2;
+}
+.capture-sub {
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  line-height: 1.7; margin-bottom: 1.75rem;
+}
+.capture-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+.capture-field-group { display: flex; flex-direction: column; gap: 6px; }
+.capture-field-group label { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; }
+.capture-field-group input {
+  font-family: var(--sans); font-size: 14px; color: #fff;
+  background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.15);
+  border-radius: 2px; padding: 11px 14px; outline: none;
+  transition: border-color 0.15s; width: 100%;
+}
+.capture-field-group input::placeholder { color: rgba(255,255,255,0.22); }
+.capture-field-group input:focus { border-color: var(--gold); }
+.capture-submit { width: 100%; font-size: 14px; padding: 13px; }
+.capture-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.capture-privacy { font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 0.75rem; text-align: center; line-height: 1.5; }
+
+/* Remove old gate styles that are no longer needed */
+.gate-privacy { font-size: 12px; color: rgba(255,255,255,0.28); margin-top: 0.75rem; }
+
+@media (max-width: 480px) {
+  .capture-card { padding: 1.75rem; }
+  .capture-fields { grid-template-columns: 1fr; }
+}

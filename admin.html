@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palymorf — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #B8A06A; --gold2: #8C6E2F; --gold3: #F5F0E8;
+      --ink: #1A1814; --mid: #5A5247; --soft: #9B9186;
+      --page: #FDFCFA; --surface: #F5F1EB; --white: #FFFFFF;
+      --teal: #0F6E56; --blue: #185FA5; --purple: #533BAA;
+      --red: #A32D2D; --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Outfit', sans-serif;
+    }
+    html { font-size: 16px; }
+    body { font-family: var(--sans); background: var(--page); color: var(--ink); min-height: 100vh; }
+
+    /* LOGIN */
+    .login-wrap {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 2rem;
+    }
+    .login-card {
+      background: var(--white); border: 0.5px solid rgba(184,160,106,0.25);
+      border-radius: 4px; padding: 2.5rem; width: 100%; max-width: 380px;
+      box-shadow: 0 4px 40px rgba(26,24,20,0.06);
+    }
+    .login-logo { font-family: var(--serif); font-size: 20px; font-weight: 400; letter-spacing: 0.14em; color: var(--ink); margin-bottom: 0.25rem; }
+    .login-logo span { color: var(--gold); }
+    .login-sub { font-size: 13px; color: var(--soft); margin-bottom: 2rem; }
+    .login-label { font-size: 12px; font-weight: 500; color: var(--mid); letter-spacing: 0.04em; display: block; margin-bottom: 6px; }
+    .login-input {
+      width: 100%; font-family: var(--sans); font-size: 14px; color: var(--ink);
+      background: var(--surface); border: 0.5px solid rgba(90,82,71,0.2);
+      border-radius: 2px; padding: 10px 14px; outline: none; margin-bottom: 1.25rem;
+      transition: border-color 0.15s;
+    }
+    .login-input:focus { border-color: var(--gold); }
+    .login-btn {
+      width: 100%; font-family: var(--sans); font-size: 13px; font-weight: 500;
+      letter-spacing: 0.06em; padding: 12px; background: var(--ink); color: #fff;
+      border: none; border-radius: 2px; cursor: pointer; transition: background 0.15s;
+    }
+    .login-btn:hover { background: #2C2820; }
+    .login-error { font-size: 13px; color: var(--red); margin-top: 0.75rem; display: none; }
+
+    /* DASHBOARD */
+    .dashboard { display: none; }
+    .dash-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem; background: var(--white);
+      border-bottom: 0.5px solid rgba(184,160,106,0.18);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .dash-logo { font-family: var(--serif); font-size: 18px; font-weight: 400; letter-spacing: 0.14em; color: var(--ink); }
+    .dash-logo span { color: var(--gold); }
+    .dash-nav-right { display: flex; align-items: center; gap: 1rem; }
+    .dash-nav-label { font-size: 12px; color: var(--soft); }
+    .dash-logout {
+      font-size: 12px; font-weight: 500; color: var(--mid); background: none;
+      border: 0.5px solid rgba(90,82,71,0.3); border-radius: 2px;
+      padding: 6px 14px; cursor: pointer; font-family: var(--sans);
+      transition: all 0.15s;
+    }
+    .dash-logout:hover { border-color: var(--ink); color: var(--ink); }
+
+    .dash-body { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+    .dash-header { margin-bottom: 2rem; }
+    .dash-title { font-family: var(--serif); font-size: 32px; font-weight: 300; color: var(--ink); margin-bottom: 0.25rem; }
+    .dash-subtitle { font-size: 14px; color: var(--soft); }
+
+    /* STATS ROW */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--white); border: 0.5px solid rgba(184,160,106,0.2); border-radius: 4px; padding: 1.25rem; }
+    .stat-num { font-family: var(--serif); font-size: 32px; font-weight: 300; color: var(--gold2); margin-bottom: 0.2rem; }
+    .stat-lbl { font-size: 12px; color: var(--soft); }
+
+    /* FILTERS */
+    .filters { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+    .filter-input {
+      font-family: var(--sans); font-size: 13px; color: var(--ink);
+      background: var(--white); border: 0.5px solid rgba(90,82,71,0.2);
+      border-radius: 2px; padding: 8px 14px; outline: none; width: 240px;
+      transition: border-color 0.15s;
+    }
+    .filter-input:focus { border-color: var(--gold); }
+    .filter-select {
+      font-family: var(--sans); font-size: 13px; color: var(--ink);
+      background: var(--white); border: 0.5px solid rgba(90,82,71,0.2);
+      border-radius: 2px; padding: 8px 14px; outline: none; cursor: pointer;
+    }
+    .filter-btn {
+      font-family: var(--sans); font-size: 12px; font-weight: 500;
+      padding: 8px 16px; border-radius: 2px; cursor: pointer; border: none;
+      background: var(--gold); color: #fff; transition: background 0.15s;
+    }
+    .filter-btn:hover { background: var(--gold2); }
+
+    /* TABLE */
+    .table-wrap { background: var(--white); border: 0.5px solid rgba(184,160,106,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 2rem; }
+    .dash-table { width: 100%; border-collapse: collapse; }
+    .dash-table th {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--soft); padding: 0.9rem 1.25rem; text-align: left;
+      border-bottom: 0.5px solid rgba(184,160,106,0.15); background: var(--surface);
+    }
+    .dash-table td { padding: 1rem 1.25rem; font-size: 13px; color: var(--ink); border-bottom: 0.5px solid rgba(184,160,106,0.1); vertical-align: middle; }
+    .dash-table tr:last-child td { border-bottom: none; }
+    .dash-table tr:hover td { background: var(--surface); cursor: pointer; }
+    .score-badge {
+      display: inline-block; font-size: 13px; font-weight: 500;
+      padding: 3px 10px; border-radius: 2px;
+    }
+    .tier-chip {
+      display: inline-block; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 2px;
+    }
+    .flag-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+    .empty-state { padding: 3rem; text-align: center; color: var(--soft); font-size: 14px; }
+    .loading-state { padding: 3rem; text-align: center; color: var(--soft); font-size: 14px; }
+
+    /* DETAIL PANEL */
+    .detail-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(26,24,20,0.5); z-index: 100;
+      align-items: flex-start; justify-content: flex-end;
+    }
+    .detail-overlay.open { display: flex; }
+    .detail-panel {
+      background: var(--white); width: 100%; max-width: 560px;
+      height: 100vh; overflow-y: auto;
+      border-left: 0.5px solid rgba(184,160,106,0.25);
+      box-shadow: -4px 0 40px rgba(26,24,20,0.1);
+      animation: slideIn 0.25s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .detail-header { padding: 1.5rem; border-bottom: 0.5px solid rgba(184,160,106,0.15); display: flex; align-items: center; justify-content: space-between; }
+    .detail-close {
+      background: none; border: 0.5px solid rgba(90,82,71,0.25);
+      border-radius: 2px; padding: 6px 12px; cursor: pointer;
+      font-size: 12px; color: var(--mid); font-family: var(--sans);
+    }
+    .detail-close:hover { border-color: var(--ink); color: var(--ink); }
+    .detail-body { padding: 1.5rem; }
+    .detail-name { font-family: var(--serif); font-size: 28px; font-weight: 300; color: var(--ink); margin-bottom: 0.2rem; }
+    .detail-email { font-size: 13px; color: var(--soft); margin-bottom: 0.25rem; }
+    .detail-date { font-size: 12px; color: var(--soft); margin-bottom: 1.5rem; }
+
+    .detail-score-row { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; padding: 1.25rem; background: var(--surface); border-radius: 4px; }
+    .detail-score-circle { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--gold); background: var(--gold3); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+    .detail-score-num { font-family: var(--serif); font-size: 26px; font-weight: 300; color: var(--gold2); line-height: 1; }
+    .detail-score-sub { font-size: 9px; color: var(--soft); }
+    .detail-tier-name { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 0.25rem; }
+    .detail-tier-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+
+    .detail-domains { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+    .dd-row { display: flex; align-items: center; gap: 10px; }
+    .dd-lbl { font-size: 12px; color: var(--mid); width: 100px; flex-shrink: 0; }
+    .dd-track { flex: 1; height: 4px; background: rgba(90,82,71,0.15); border-radius: 2px; overflow: hidden; }
+    .dd-fill { height: 100%; border-radius: 2px; }
+    .dd-val { font-size: 12px; font-weight: 500; color: var(--ink); width: 28px; text-align: right; flex-shrink: 0; }
+
+    .detail-section-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 0.75rem; margin-top: 1.5rem; }
+    .detail-flag { padding: 0.9rem 1rem; background: #FCEBEB; border-left: 2px solid var(--red); border-radius: 0; margin-bottom: 0.75rem; }
+    .detail-flag-tag { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--red); font-weight: 500; margin-bottom: 3px; }
+    .detail-flag-body { font-size: 13px; color: #791F1F; line-height: 1.5; }
+    .detail-flag-positive { padding: 0.9rem 1rem; background: #E1F5EE; border-left: 2px solid var(--teal); margin-bottom: 0.75rem; }
+    .detail-flag-positive .detail-flag-tag { color: var(--teal); }
+    .detail-flag-positive .detail-flag-body { color: #085041; }
+
+    .detail-answers { }
+    .answer-domain { margin-bottom: 1.5rem; }
+    .answer-domain-title { font-size: 12px; font-weight: 500; color: var(--ink); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 0.5px solid rgba(184,160,106,0.2); }
+    .answer-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.5rem 0; border-bottom: 0.5px solid rgba(90,82,71,0.08); gap: 1rem; }
+    .answer-row:last-child { border-bottom: none; }
+    .answer-q { font-size: 12px; color: var(--mid); flex: 1; line-height: 1.5; }
+    .answer-v { font-size: 13px; font-weight: 500; color: var(--ink); flex-shrink: 0; width: 20px; text-align: right; }
+
+    .detail-notes { margin-top: 1.5rem; }
+    .notes-textarea {
+      width: 100%; font-family: var(--sans); font-size: 13px; color: var(--ink);
+      background: var(--surface); border: 0.5px solid rgba(90,82,71,0.2);
+      border-radius: 2px; padding: 10px 14px; outline: none; resize: vertical;
+      min-height: 100px; margin-top: 0.5rem; transition: border-color 0.15s;
+    }
+    .notes-textarea:focus { border-color: var(--gold); }
+    .notes-save {
+      margin-top: 0.75rem; font-family: var(--sans); font-size: 12px; font-weight: 500;
+      padding: 9px 20px; background: var(--gold); color: #fff; border: none;
+      border-radius: 2px; cursor: pointer; transition: background 0.15s;
+    }
+    .notes-save:hover { background: var(--gold2); }
+    .notes-saved { font-size: 12px; color: var(--teal); margin-left: 0.75rem; display: none; }
+
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .detail-panel { max-width: 100%; }
+      .dash-table { font-size: 12px; }
+      .dash-table th, .dash-table td { padding: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">PALYM<span>O</span>RF</div>
+    <div class="login-sub">Admin Dashboard — restricted access</div>
+    <label class="login-label" for="adminPass">Password</label>
+    <input type="password" class="login-input" id="adminPass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Sign in &rarr;</button>
+    <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <nav class="dash-nav">
+    <div class="dash-logo">PALYM<span>O</span>RF</div>
+    <div class="dash-nav-right">
+      <span class="dash-nav-label">Admin Dashboard</span>
+      <button class="dash-logout" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <div class="dash-body">
+    <div class="dash-header">
+      <div class="dash-title">Assessment Results</div>
+      <div class="dash-subtitle">All Wealth Readiness Score submissions</div>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card"><div class="stat-num" id="statTotal">—</div><div class="stat-lbl">Total submissions</div></div>
+      <div class="stat-card"><div class="stat-num" id="statAvg">—</div><div class="stat-lbl">Average score</div></div>
+      <div class="stat-card"><div class="stat-num" id="statFlags">—</div><div class="stat-lbl">Time/money gap flags</div></div>
+      <div class="stat-card"><div class="stat-num" id="statWeek">—</div><div class="stat-lbl">This week</div></div>
+    </div>
+
+    <div class="filters">
+      <input type="text" class="filter-input" id="searchInput" placeholder="Search by name or email..." oninput="filterTable()">
+      <select class="filter-select" id="tierFilter" onchange="filterTable()">
+        <option value="">All tiers</option>
+        <option value="Wealth Ready">Wealth Ready</option>
+        <option value="High Potential">High Potential</option>
+        <option value="At the Threshold">At the Threshold</option>
+        <option value="Significant Gaps">Significant Gaps</option>
+        <option value="Rebuild Required">Rebuild Required</option>
+      </select>
+      <select class="filter-select" id="flagFilter" onchange="filterTable()">
+        <option value="">All submissions</option>
+        <option value="flagged">Flagged only (time/money gap)</option>
+        <option value="unflagged">No flags</option>
+      </select>
+      <button class="filter-btn" onclick="exportCSV()">Export CSV</button>
+    </div>
+
+    <div class="table-wrap">
+      <div class="loading-state" id="tableLoading">Loading submissions...</div>
+      <table class="dash-table" id="dashTable" style="display:none">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Score</th>
+            <th>Tier</th>
+            <th>Flags</th>
+            <th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="emptyState">No submissions match your filters.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<script>
+  // ── CONFIG ─────────────────────────────────
+  // Password is checked client-side for simplicity.
+  // For production, consider a proper auth solution.
+  const ADMIN_PASSWORD = 'palymorf2026';
+  const SUPABASE_URL = window.SUPABASE_URL || '';
+  const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || '';
+
+  let allSubmissions = [];
+  let filteredSubmissions = [];
+
+  // ── AUTH ───────────────────────────────────
+  function login() {
+    const pass = document.getElementById('adminPass').value;
+    if (pass === ADMIN_PASSWORD) {
+      sessionStorage.setItem('palymorf_admin', '1');
+      showDashboard();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('palymorf_admin');
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('loginWrap').style.display = 'flex';
+    document.getElementById('adminPass').value = '';
+  }
+
+  function showDashboard() {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadSubmissions();
+  }
+
+  // ── DATA ───────────────────────────────────
+  async function loadSubmissions() {
+    try {
+      const res = await fetch('/api/submissions', {
+        headers: { 'x-admin-key': ADMIN_PASSWORD }
+      });
+      if (!res.ok) throw new Error('Failed to load');
+      const data = await res.json();
+      allSubmissions = data.submissions || [];
+      renderDashboard();
+    } catch (e) {
+      document.getElementById('tableLoading').textContent = 'Failed to load submissions. Check your API connection.';
+    }
+  }
+
+  async function saveNote(id, note) {
+    await fetch('/api/submissions/' + id + '/note', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_PASSWORD },
+      body: JSON.stringify({ note })
+    });
+  }
+
+  // ── RENDER ─────────────────────────────────
+  function renderDashboard() {
+    const total = allSubmissions.length;
+    const avg = total ? Math.round(allSubmissions.reduce((s, r) => s + r.overall_score, 0) / total) : 0;
+    const flags = allSubmissions.filter(r => r.flags && r.flags.time_money_gap).length;
+    const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const week = allSubmissions.filter(r => new Date(r.created_at).getTime() > oneWeekAgo).length;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statAvg').textContent = avg || '—';
+    document.getElementById('statFlags').textContent = flags;
+    document.getElementById('statWeek').textContent = week;
+
+    filterTable();
+    document.getElementById('tableLoading').style.display = 'none';
+    document.getElementById('dashTable').style.display = 'block';
+  }
+
+  function filterTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const tier = document.getElementById('tierFilter').value;
+    const flagF = document.getElementById('flagFilter').value;
+
+    filteredSubmissions = allSubmissions.filter(r => {
+      const matchSearch = !search ||
+        r.name.toLowerCase().includes(search) ||
+        r.email.toLowerCase().includes(search);
+      const matchTier = !tier || r.tier === tier;
+      const matchFlag = !flagF ||
+        (flagF === 'flagged' && r.flags && r.flags.time_money_gap) ||
+        (flagF === 'unflagged' && !(r.flags && r.flags.time_money_gap));
+      return matchSearch && matchTier && matchFlag;
+    });
+
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    const empty = document.getElementById('emptyState');
+
+    if (!filteredSubmissions.length) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+
+    const tierColors = {
+      'Wealth Ready': { bg: '#E1F5EE', color: '#085041' },
+      'High Potential': { bg: '#E6F1FB', color: '#0C447C' },
+      'At the Threshold': { bg: '#FFF8E6', color: '#7A5C00' },
+      'Significant Gaps': { bg: '#FEF0E6', color: '#7A3600' },
+      'Rebuild Required': { bg: '#FCEBEB', color: '#791F1F' }
+    };
+
+    tbody.innerHTML = filteredSubmissions.map(r => {
+      const tc = tierColors[r.tier] || { bg: '#F0F0F0', color: '#555' };
+      const scoreColor = r.overall_score >= 70 ? '#0F6E56' : r.overall_score >= 50 ? '#8C6E2F' : '#A32D2D';
+      const hasFlag = r.flags && r.flags.time_money_gap;
+      const hasLowVal = r.flags && r.flags.low_value_time;
+      const date = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      return `<tr onclick="openDetail('${r.id}')">
+        <td><strong>${escHtml(r.name)}</strong></td>
+        <td style="color:var(--soft)">${escHtml(r.email)}</td>
+        <td><span class="score-badge" style="background:${scoreColor}22;color:${scoreColor}">${r.overall_score}</span></td>
+        <td><span class="tier-chip" style="background:${tc.bg};color:${tc.color}">${r.tier}</span></td>
+        <td>
+          ${hasFlag ? '<span title="Time/money gap"><span class="flag-dot" style="background:#A32D2D"></span>Time gap</span>' : ''}
+          ${hasLowVal ? '<span title="Low-value time use" style="margin-left:4px"><span class="flag-dot" style="background:#8C6E2F"></span>Low-value</span>' : ''}
+          ${!hasFlag && !hasLowVal ? '<span style="color:var(--soft);font-size:12px">None</span>' : ''}
+        </td>
+        <td style="color:var(--soft)">${date}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── DETAIL PANEL ───────────────────────────
+  function openDetail(id) {
+    const r = allSubmissions.find(s => s.id === id);
+    if (!r) return;
+
+    const domainColors = { time: '#B8A06A', wealth: '#185FA5', identity: '#0F6E56', systems: '#8C6E2F', relationships: '#533BAA' };
+    const domainNames = { time: 'Time', wealth: 'Wealth', identity: 'Identity', systems: 'Systems', relationships: 'Relationships' };
+    const date = new Date(r.created_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const tier = r.tier;
+
+    const domainBars = Object.entries(r.domain_scores || {}).map(([k, v]) => `
+      <div class="dd-row">
+        <span class="dd-lbl">${domainNames[k] || k}</span>
+        <div class="dd-track"><div class="dd-fill" style="width:${v}%;background:${domainColors[k]}"></div></div>
+        <span class="dd-val">${v}</span>
+      </div>`).join('');
+
+    const flagsHTML = r.flags
+      ? [
+          r.flags.time_money_gap ? `<div class="detail-flag"><div class="detail-flag-tag">Critical flag — time vs. money gap</div><div class="detail-flag-body">Says time is the priority but decisions consistently favor earning more. Trading the irreplaceable for more of what they already have.</div></div>` : '',
+          r.flags.low_value_time ? `<div class="detail-flag"><div class="detail-flag-tag">Wealth tax — low-value time use</div><div class="detail-flag-body">Regularly spending time on tasks that should be delegated. High-cost hours doing low-value work.</div></div>` : '',
+          r.flags.time_aligned ? `<div class="detail-flag-positive"><div class="detail-flag-tag">Time alignment confirmed</div><div class="detail-flag-body">Values and behavior are aligned on time. Rare at this income level.</div></div>` : ''
+        ].join('') : '';
+
+    const answersHTML = r.answers
+      ? Object.entries(r.answers).map(([domainId, qs]) => `
+          <div class="answer-domain">
+            <div class="answer-domain-title">${domainNames[domainId] || domainId}</div>
+            ${qs.map((a, i) => `
+              <div class="answer-row">
+                <span class="answer-q">Q${i + 1}</span>
+                <span class="answer-v">${a}</span>
+              </div>`).join('')}
+          </div>`).join('')
+      : '<p style="font-size:13px;color:var(--soft)">Full answers not available.</p>';
+
+    document.getElementById('detailPanel').innerHTML = `
+      <div class="detail-header">
+        <div>
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:4px">Submission Detail</div>
+        </div>
+        <button class="detail-close" onclick="closeDetail()">Close ✕</button>
+      </div>
+      <div class="detail-body">
+        <div class="detail-name">${escHtml(r.name)}</div>
+        <div class="detail-email">${escHtml(r.email)}</div>
+        <div class="detail-date">${date}</div>
+
+        <div class="detail-score-row">
+          <div class="detail-score-circle">
+            <div class="detail-score-num">${r.overall_score}</div>
+            <div class="detail-score-sub">/ 100</div>
+          </div>
+          <div>
+            <div class="detail-tier-name">${tier}</div>
+            <div class="detail-tier-desc">${getTierTagline(tier)}</div>
+          </div>
+        </div>
+
+        <div class="detail-section-title">Domain breakdown</div>
+        <div class="detail-domains">${domainBars}</div>
+
+        ${flagsHTML ? `<div class="detail-section-title">Flags</div>${flagsHTML}` : ''}
+
+        <div class="detail-section-title">Notes</div>
+        <div class="detail-notes">
+          <textarea class="notes-textarea" id="noteArea" placeholder="Add your pre-meeting notes here...">${escHtml(r.note || '')}</textarea>
+          <div style="display:flex;align-items:center">
+            <button class="notes-save" onclick="saveNoteAndConfirm('${r.id}')">Save notes</button>
+            <span class="notes-saved" id="notesSaved">Saved ✓</span>
+          </div>
+        </div>
+
+        <div class="detail-section-title">Full answers</div>
+        <div class="detail-answers">${answersHTML}</div>
+      </div>`;
+
+    document.getElementById('detailOverlay').classList.add('open');
+  }
+
+  function closeDetail() {
+    document.getElementById('detailOverlay').classList.remove('open');
+  }
+
+  async function saveNoteAndConfirm(id) {
+    const note = document.getElementById('noteArea').value;
+    const sub = allSubmissions.find(s => s.id === id);
+    if (sub) sub.note = note;
+    await saveNote(id, note);
+    const saved = document.getElementById('notesSaved');
+    saved.style.display = 'inline';
+    setTimeout(() => { saved.style.display = 'none'; }, 2000);
+  }
+
+  // ── EXPORT ─────────────────────────────────
+  function exportCSV() {
+    const rows = [['Name', 'Email', 'Score', 'Tier', 'Time/Money Flag', 'Low Value Flag', 'Date', 'Note']];
+    filteredSubmissions.forEach(r => {
+      rows.push([
+        r.name, r.email, r.overall_score, r.tier,
+        r.flags?.time_money_gap ? 'Yes' : 'No',
+        r.flags?.low_value_time ? 'Yes' : 'No',
+        new Date(r.created_at).toLocaleDateString(),
+        (r.note || '').replace(/\n/g, ' ')
+      ]);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `palymorf-submissions-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  // ── UTILS ──────────────────────────────────
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function getTierTagline(tier) {
+    const map = {
+      'Wealth Ready': 'Operating at a high level. The gap between success and freedom is narrow.',
+      'High Potential': 'Built something significant. A few specific gaps are keeping them from fully living it.',
+      'At the Threshold': 'Close — but something is leaking. Time, systems, or identity misalignment.',
+      'Significant Gaps': 'Success on paper but several domains need restructuring.',
+      'Rebuild Required': 'Success is real but systems, identity, and structure are not keeping up.'
+    };
+    return map[tier] || '';
+  }
+
+  // ── INIT ───────────────────────────────────
+  if (sessionStorage.getItem('palymorf_admin') === '1') {
+    showDashboard();
+  }
+</script>
+</body>
+</html>
