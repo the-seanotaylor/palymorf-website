@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Palymorf Wealth Readiness Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #B8A06A; --gold2: #8C6E2F; --gold3: #F5F0E8;
+      --ink: #1A1814; --mid: #5A5247; --soft: #9B9186;
+      --teal: #0F6E56; --blue: #185FA5; --purple: #533BAA; --red: #A32D2D;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans:  'Outfit', sans-serif;
+    }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--ink); color: #fff; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    .hidden { display: none !important; }
+
+    /* ── NAV ── */
+    .report-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      border-bottom: 0.5px solid rgba(184,160,106,0.18);
+    }
+    .report-logo { font-family: var(--serif); font-size: 20px; font-weight: 400; letter-spacing: 0.15em; color: #fff; text-decoration: none; }
+    .report-logo span { color: var(--gold); }
+
+    /* ── LAYOUT ── */
+    .report-wrap { max-width: 680px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+
+    /* ── STATES ── */
+    .state-block { text-align: center; padding: 6rem 2rem; }
+    .state-block p { font-size: 15px; color: rgba(255,255,255,0.4); line-height: 1.7; }
+
+    /* ── SUCCESS BANNER ── */
+    .success-banner {
+      background: rgba(15,110,86,0.15); border: 0.5px solid rgba(15,110,86,0.4);
+      border-radius: 2px; padding: 0.9rem 1.25rem; margin-bottom: 2.5rem;
+      font-size: 13px; color: #5DCAA5; text-align: center; line-height: 1.5;
+    }
+
+    /* ── HERO ── */
+    .report-eyebrow { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 0.5rem; text-align: center; }
+    .report-name    { font-family: var(--serif); font-size: 40px; font-weight: 300; color: #fff; text-align: center; margin-bottom: 0.25rem; line-height: 1.1; }
+    .report-date    { font-size: 12px; color: rgba(255,255,255,0.28); text-align: center; margin-bottom: 3rem; }
+
+    /* ── SCORE ── */
+    .score-section { text-align: center; margin-bottom: 3rem; }
+    .score-ring {
+      width: 150px; height: 150px; border-radius: 50%;
+      border: 2px solid var(--gold); background: rgba(184,160,106,0.08);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .score-num    { font-family: var(--serif); font-size: 60px; font-weight: 300; color: var(--gold); line-height: 1; }
+    .score-denom  { font-size: 11px; color: rgba(184,160,106,0.5); }
+    .score-tier   { font-family: var(--serif); font-size: 26px; font-weight: 300; color: #fff; margin-bottom: 0.5rem; }
+    .score-tagline { font-size: 13px; color: rgba(255,255,255,0.42); max-width: 440px; margin: 0 auto; line-height: 1.75; }
+
+    /* ── FREE LABEL ── */
+    .free-tag { display: inline-block; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; color: rgba(255,255,255,0.3); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 2px; padding: 2px 8px; margin-bottom: 2rem; }
+
+    /* ── SECTION LABEL ── */
+    .section-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 1rem; }
+
+    /* ── DOMAIN BARS ── */
+    .domain-bars { display: flex; flex-direction: column; gap: 12px; margin-bottom: 2rem; }
+    .d-bar-row   { display: grid; grid-template-columns: 110px 1fr 36px; align-items: center; gap: 12px; }
+    .d-bar-lbl   { font-size: 13px; color: rgba(255,255,255,0.65); }
+    .d-bar-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+    .d-bar-fill  { height: 100%; border-radius: 2px; }
+    .d-bar-val   { font-size: 13px; font-weight: 500; color: #fff; text-align: right; }
+
+    /* ── FLAGS / INSIGHTS ── */
+    .flag-box { padding: 1.1rem 1.25rem; margin-bottom: 0.75rem; border-radius: 2px; }
+    .flag-box.flag-red    { background: rgba(163,45,45,0.12);  border-left: 2px solid var(--red);  }
+    .flag-box.flag-yellow { background: rgba(140,110,47,0.12); border-left: 2px solid var(--gold2); }
+    .flag-box.flag-green  { background: rgba(15,110,86,0.12);  border-left: 2px solid var(--teal); }
+    .flag-tag   { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.3rem; }
+    .flag-red    .flag-tag { color: #F09595; }
+    .flag-yellow .flag-tag { color: var(--gold); }
+    .flag-green  .flag-tag { color: #5DCAA5; }
+    .flag-title  { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 0.25rem; }
+    .flag-body   { font-size: 13px; color: rgba(255,255,255,0.48); line-height: 1.65; }
+
+    .insight-box { background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 2px; padding: 1.25rem; margin-bottom: 0.75rem; }
+    .insight-tag   { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.4rem; }
+    .insight-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 0.4rem; }
+    .insight-body  { font-size: 13px; color: rgba(255,255,255,0.48); line-height: 1.65; }
+
+    /* ── PAYWALL ── */
+    .paywall-wrap    { position: relative; margin-top: 2rem; border-radius: 2px; overflow: hidden; }
+    .paywall-preview { filter: blur(6px); pointer-events: none; user-select: none; opacity: 0.35; }
+    .paywall-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(to bottom, rgba(26,24,20,0) 0%, rgba(26,24,20,0.85) 35%, rgba(26,24,20,0.98) 100%);
+      padding: 2rem;
+    }
+    .paywall-card {
+      background: rgba(184,160,106,0.07); border: 0.5px solid rgba(184,160,106,0.28);
+      border-radius: 4px; padding: 2rem; text-align: center; width: 100%; max-width: 400px;
+    }
+    .paywall-title { font-family: var(--serif); font-size: 28px; font-weight: 300; color: #fff; margin-bottom: 0.4rem; }
+    .paywall-price { font-size: 36px; font-weight: 500; color: var(--gold); margin-bottom: 1.25rem; line-height: 1; }
+    .paywall-includes { list-style: none; margin-bottom: 1.5rem; text-align: left; }
+    .paywall-includes li { font-size: 13px; color: rgba(255,255,255,0.58); padding: 5px 0 5px 1.4rem; position: relative; line-height: 1.5; }
+    .paywall-includes li::before { content: '✓'; position: absolute; left: 0; color: var(--gold); font-weight: 500; }
+    .unlock-btn {
+      width: 100%; font-family: var(--sans); font-size: 14px; font-weight: 500;
+      letter-spacing: 0.06em; padding: 14px; background: var(--gold); color: #fff;
+      border: none; border-radius: 2px; cursor: pointer; transition: background 0.2s;
+      margin-bottom: 0.75rem;
+    }
+    .unlock-btn:hover    { background: var(--gold2); }
+    .unlock-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .paywall-note { font-size: 11px; color: rgba(255,255,255,0.22); line-height: 1.5; }
+
+    /* ── POLLING BANNER ── */
+    .polling-banner {
+      background: rgba(140,110,47,0.12); border: 0.5px solid rgba(184,160,106,0.3);
+      border-radius: 2px; padding: 0.9rem 1.25rem; margin-bottom: 2rem;
+      font-size: 13px; color: var(--gold); text-align: center;
+    }
+
+    /* ── FOOTER ── */
+    .report-footer { text-align: center; padding: 2rem; border-top: 0.5px solid rgba(184,160,106,0.1); margin-top: 4rem; }
+    .report-footer p { font-size: 11px; color: rgba(255,255,255,0.18); }
+    .report-footer a { color: rgba(184,160,106,0.45); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .report-nav  { padding: 1rem 1.5rem; }
+      .report-wrap { padding: 2.5rem 1.25rem 4rem; }
+      .report-name { font-size: 30px; }
+      .score-num   { font-size: 50px; }
+      .d-bar-row   { grid-template-columns: 90px 1fr 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <a href="/" class="report-logo">PALYM<span>O</span>RF</a>
+</nav>
+
+<div class="report-wrap">
+
+  <!-- LOADING -->
+  <div class="state-block" id="stateLoading">
+    <p>Loading your report...</p>
+  </div>
+
+  <!-- ERROR -->
+  <div class="state-block hidden" id="stateError">
+    <p id="stateErrorMsg">Report not found. This link may be invalid or expired.</p>
+  </div>
+
+  <!-- REPORT -->
+  <div id="reportContent" class="hidden">
+
+    <!-- Post-payment polling notice -->
+    <div class="polling-banner hidden" id="pollingBanner">
+      Confirming your payment — this usually takes a few seconds...
+    </div>
+
+    <!-- Post-payment success confirmation -->
+    <div class="success-banner hidden" id="successBanner">
+      Payment confirmed. Your full report is now unlocked permanently on this link.
+    </div>
+
+    <!-- Hero -->
+    <div class="report-eyebrow">Wealth Readiness Report</div>
+    <div class="report-name"  id="rName"></div>
+    <div class="report-date"  id="rDate"></div>
+
+    <!-- Score — always visible (free) -->
+    <div class="score-section">
+      <div class="score-ring">
+        <div class="score-num"   id="rScore"></div>
+        <div class="score-denom">out of 100</div>
+      </div>
+      <div class="score-tier"    id="rTier"></div>
+      <div class="score-tagline" id="rTagline"></div>
+    </div>
+    <div style="text-align:center"><span class="free-tag">Free preview</span></div>
+
+    <!-- Full report (paid) -->
+    <div id="fullReport" class="hidden">
+      <div class="section-label" style="margin-top:2rem">Domain Breakdown</div>
+      <div class="domain-bars" id="rDomains"></div>
+
+      <div class="section-label" style="margin-top:2rem">Flags &amp; Insights</div>
+      <div id="rFlags"></div>
+      <div id="rInsights"></div>
+    </div>
+
+    <!-- Paywall (unpaid) -->
+    <div id="paywallSection" class="hidden">
+      <div class="paywall-wrap">
+
+        <!-- Blurred dummy preview -->
+        <div class="paywall-preview">
+          <div class="section-label" style="margin-top:2rem">Domain Breakdown</div>
+          <div class="domain-bars">
+            <div class="d-bar-row"><span class="d-bar-lbl">Time</span><div class="d-bar-track"><div class="d-bar-fill" style="width:62%;background:#B8A06A"></div></div><span class="d-bar-val">62</span></div>
+            <div class="d-bar-row"><span class="d-bar-lbl">Wealth</span><div class="d-bar-track"><div class="d-bar-fill" style="width:71%;background:#185FA5"></div></div><span class="d-bar-val">71</span></div>
+            <div class="d-bar-row"><span class="d-bar-lbl">Identity</span><div class="d-bar-track"><div class="d-bar-fill" style="width:58%;background:#0F6E56"></div></div><span class="d-bar-val">58</span></div>
+            <div class="d-bar-row"><span class="d-bar-lbl">Systems</span><div class="d-bar-track"><div class="d-bar-fill" style="width:49%;background:#8C6E2F"></div></div><span class="d-bar-val">49</span></div>
+            <div class="d-bar-row"><span class="d-bar-lbl">Relationships</span><div class="d-bar-track"><div class="d-bar-fill" style="width:67%;background:#533BAA"></div></div><span class="d-bar-val">67</span></div>
+          </div>
+          <div class="section-label" style="margin-top:2rem">Flags &amp; Insights</div>
+          <div class="flag-box flag-red">
+            <div class="flag-tag">Critical flag — time vs. money gap</div>
+            <div class="flag-title">You say time. Your actions say money.</div>
+            <div class="flag-body">Your answers indicate you value your time — but your decisions consistently prioritize earning more.</div>
+          </div>
+          <div class="insight-box">
+            <div class="insight-tag" style="color:#5DCAA5">Strongest domain</div>
+            <div class="insight-title">Where you are already winning</div>
+            <div class="insight-body">Your wealth is working intelligently across multiple streams with proactive strategy.</div>
+          </div>
+          <div class="insight-box">
+            <div class="insight-tag" style="color:#F09595">Priority gap</div>
+            <div class="insight-title">Where to focus first</div>
+            <div class="insight-body">Your life is running on personal effort rather than infrastructure. This is unsustainable.</div>
+          </div>
+        </div>
+
+        <!-- Overlay with payment card -->
+        <div class="paywall-overlay">
+          <div class="paywall-card">
+            <div class="paywall-title">Unlock your full report</div>
+            <div class="paywall-price">$197</div>
+            <ul class="paywall-includes">
+              <li>Complete breakdown across all 5 domains</li>
+              <li>Personalized flags and critical patterns</li>
+              <li>Strongest domain insight and priority gaps</li>
+              <li>Permanent link — revisit any time</li>
+            </ul>
+            <button class="unlock-btn" id="unlockBtn" onclick="startCheckout()">Unlock Full Report &rarr;</button>
+            <p class="paywall-note">One-time payment &middot; Secure checkout via Stripe</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="report-footer">
+  <p>&copy; 2026 Palymorf LLC &nbsp;&middot;&nbsp; <a href="/">palymorf.com</a></p>
+</div>
+
+<script>
+  const DOMAIN_COLORS = { time:'#B8A06A', wealth:'#185FA5', identity:'#0F6E56', systems:'#8C6E2F', relationships:'#533BAA' };
+  const DOMAIN_NAMES  = { time:'Time', wealth:'Wealth', identity:'Identity', systems:'Systems', relationships:'Relationships' };
+
+  const INSIGHT_MAP = {
+    time:          { str: 'Your time is genuinely protected — real boundaries and structures that most high earners never achieve.', weak: 'Time is your most urgent gap. You are likely running on someone else\'s calendar and sacrificing your own priorities every single day.' },
+    wealth:        { str: 'Your wealth is working intelligently — multiple streams, proactive strategy, and assets that grow without your constant attention.', weak: 'Your wealth strategy has gaps quietly costing you compounding growth. Money sitting idle or assets that drain are silently expensive.' },
+    identity:      { str: 'You have strong identity clarity — you know who you are becoming and your decisions reflect that alignment.', weak: 'Identity misalignment is the invisible tax on everything else. When who you are and how you live don\'t match, nothing feels like enough.' },
+    systems:       { str: 'Your life runs on strong systems — things work without your constant presence, one of the rarest achievements at your level.', weak: 'Your life is running on personal effort rather than infrastructure. This is unsustainable and will either burn you out or cap your growth.' },
+    relationships: { str: 'Your relationships are a genuine source of strength — you are known, supported, and surrounded by people who reflect your values.', weak: 'Relationship gaps at your level often go unnamed because everything looks fine externally. But isolation inside success is one of the most costly problems we see.' }
+  };
+
+  const TIER_TAGLINES = {
+    'Wealth Ready':     'You are operating at a high level across most domains. The gap between your success and your freedom is narrow — and closeable with the right moves.',
+    'High Potential':   'You have built something significant. A few specific gaps are keeping you from fully living it. The blueprint is clear.',
+    'At the Threshold': 'You are close — but something is leaking. Time, systems, or identity misalignment is costing you more than you realize.',
+    'Significant Gaps': 'You have achieved success on paper but several domains need restructuring. The good news: the gaps are identifiable and fixable.',
+    'Rebuild Required': 'Your success is real but your systems, identity, and structure are not keeping up with it. This is the most important moment to get clarity.'
+  };
+
+  let reportData = null;
+  let reportId   = null;
+
+  // ── INIT ─────────────────────────────────────
+  async function init() {
+    const parts = window.location.pathname.replace(/\/+$/, '').split('/');
+    reportId = parts[parts.length - 1];
+
+    if (!reportId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(reportId)) {
+      return showError('Invalid report link.');
+    }
+
+    await loadReport();
+
+    // If redirected back from Stripe and not yet marked paid, poll
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success' && reportData && !reportData.paid) {
+      pollForPaid();
+    }
+  }
+
+  async function loadReport() {
+    try {
+      const res = await fetch(`/api/report/${reportId}`);
+      if (res.status === 404) { showError('Report not found. This link may be invalid.'); return; }
+      if (!res.ok) throw new Error('Server error');
+      reportData = await res.json();
+      render(reportData);
+    } catch (e) {
+      showError('Failed to load your report. Please try again.');
+    }
+  }
+
+  // ── POLL after payment (Stripe webhook is async) ──
+  async function pollForPaid(attempts = 0) {
+    if (attempts === 0) {
+      document.getElementById('pollingBanner').classList.remove('hidden');
+    }
+    if (attempts >= 12) {
+      // Give up — ask them to refresh
+      document.getElementById('pollingBanner').textContent = 'Payment received. Please refresh this page to see your full report.';
+      return;
+    }
+    await new Promise(r => setTimeout(r, 2500));
+    try {
+      const res  = await fetch(`/api/report/${reportId}`);
+      const data = await res.json();
+      if (data.paid) {
+        reportData = data;
+        document.getElementById('pollingBanner').classList.add('hidden');
+        document.getElementById('successBanner').classList.remove('hidden');
+        render(data);
+      } else {
+        pollForPaid(attempts + 1);
+      }
+    } catch {
+      pollForPaid(attempts + 1);
+    }
+  }
+
+  // ── RENDER ───────────────────────────────────
+  function render(data) {
+    document.getElementById('stateLoading').classList.add('hidden');
+    document.getElementById('reportContent').classList.remove('hidden');
+
+    document.title = `${data.name} — Palymorf Wealth Readiness Report`;
+    document.getElementById('rName').textContent  = data.name;
+    document.getElementById('rDate').textContent  = 'Completed ' + new Date(data.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    document.getElementById('rScore').textContent = data.overall_score;
+    document.getElementById('rTier').textContent  = data.tier;
+    document.getElementById('rTagline').textContent = TIER_TAGLINES[data.tier] || '';
+
+    if (data.paid) {
+      renderFull(data);
+    } else {
+      document.getElementById('paywallSection').classList.remove('hidden');
+      document.getElementById('fullReport').classList.add('hidden');
+    }
+  }
+
+  function renderFull(data) {
+    document.getElementById('fullReport').classList.remove('hidden');
+    document.getElementById('paywallSection').classList.add('hidden');
+
+    // Domain bars
+    const ds = data.domain_scores || {};
+    document.getElementById('rDomains').innerHTML = Object.entries(ds).map(([k, v]) => `
+      <div class="d-bar-row">
+        <span class="d-bar-lbl">${DOMAIN_NAMES[k] || k}</span>
+        <div class="d-bar-track"><div class="d-bar-fill" style="width:${v}%;background:${DOMAIN_COLORS[k]}"></div></div>
+        <span class="d-bar-val">${v}</span>
+      </div>`).join('');
+
+    // Flags
+    const flags = data.flags || {};
+    let flagsHTML = '';
+    if (flags.time_money_gap) flagsHTML += `<div class="flag-box flag-red"><div class="flag-tag">Critical flag — time vs. money gap</div><div class="flag-title">You say time. Your actions say money.</div><div class="flag-body">Your answers indicate you value your time — but your actual decisions consistently prioritize earning more over protecting the hours you have. You are trading the one thing that cannot be replaced for more of the one thing you already have enough of.</div></div>`;
+    if (flags.low_value_time) flagsHTML += `<div class="flag-box flag-yellow"><div class="flag-tag">Wealth tax — low-value time use</div><div class="flag-title">You are doing work that should be delegated.</div><div class="flag-body">At your income level, every hour spent on low-value work is a decision to underpay yourself. This is one of the first things the Palymorf Life Audit eliminates.</div></div>`;
+    if (flags.time_aligned)   flagsHTML += `<div class="flag-box flag-green"><div class="flag-tag">Time alignment confirmed</div><div class="flag-title">Your values and your behavior are aligned on time.</div><div class="flag-body">You not only say time is your priority — your actual decisions reflect it. Rare at your income level.</div></div>`;
+    document.getElementById('rFlags').innerHTML = flagsHTML;
+
+    // Insights
+    const sorted = Object.entries(ds).sort((a, b) => b[1] - a[1]);
+    const best   = sorted[0];
+    const worst  = sorted.slice(-2);
+    let insightsHTML = '';
+    if (best) {
+      insightsHTML += `<div class="insight-box" style="border-left:2px solid ${DOMAIN_COLORS[best[0]]}"><div class="insight-tag" style="color:${DOMAIN_COLORS[best[0]]}">Strongest domain — ${DOMAIN_NAMES[best[0]]}</div><div class="insight-title">Where you are already winning</div><div class="insight-body">${esc(INSIGHT_MAP[best[0]]?.str || '')}</div></div>`;
+    }
+    worst.forEach(([k]) => {
+      insightsHTML += `<div class="insight-box" style="border-left:2px solid #A32D2D"><div class="insight-tag" style="color:#F09595">Priority gap — ${DOMAIN_NAMES[k]}</div><div class="insight-title">Where to focus first</div><div class="insight-body">${esc(INSIGHT_MAP[k]?.weak || '')}</div></div>`;
+    });
+    document.getElementById('rInsights').innerHTML = insightsHTML;
+  }
+
+  // ── CHECKOUT ─────────────────────────────────
+  async function startCheckout() {
+    const btn = document.getElementById('unlockBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Redirecting to checkout...';
+
+    try {
+      const res = await fetch('/api/create-checkout', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ id: reportData.id, email: reportData.email, name: reportData.name })
+      });
+      const { url, error } = await res.json();
+      if (error) throw new Error(error);
+      window.location.href = url;
+    } catch (e) {
+      btn.disabled    = false;
+      btn.textContent = 'Unlock Full Report →';
+      alert('Something went wrong. Please try again.');
+    }
+  }
+
+  // ── HELPERS ──────────────────────────────────
+  function showError(msg) {
+    document.getElementById('stateLoading').classList.add('hidden');
+    document.getElementById('stateError').classList.remove('hidden');
+    document.getElementById('stateErrorMsg').textContent = msg;
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  init();
+</script>
+</body>
+</html>

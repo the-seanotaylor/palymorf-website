@@ -56,6 +56,9 @@ export default async function handler(req, res) {
     }
 
     const [savedRecord] = await dbRes.json();
+    const submissionId = savedRecord?.id;
+    const baseUrl      = process.env.SITE_URL || 'https://palymorf.com';
+    const reportUrl    = submissionId ? `${baseUrl}/report/${submissionId}` : null;
 
     // ── 2. SEND EMAIL NOTIFICATION ──────────
     if (resendKey && notifyEmail) {
@@ -105,8 +108,10 @@ FLAGS
 ${flagLines || 'No flags detected'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━
-View full submission in the admin dashboard:
-https://palymorf.com/admin
+LINKS
+━━━━━━━━━━━━━━━━━━━━━━━
+Customer report: ${reportUrl || 'N/A'}
+Admin dashboard: https://palymorf.com/admin
 ━━━━━━━━━━━━━━━━━━━━━━━
           `.trim(),
           html: `
@@ -210,14 +215,19 @@ https://palymorf.com
   .section-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #B8A06A; font-weight: 500; margin: 1.5rem 0 0.75rem; }
   .domain-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid #E8DCC8; font-size: 14px; }
   .domain-row:last-child { border-bottom: none; }
-  .next-steps { background: #1A1814; border-radius: 4px; padding: 1.5rem; margin-top: 2rem; color: #fff; }
-  .next-steps-title { font-size: 15px; font-weight: 500; color: #B8A06A; margin-bottom: 0.5rem; }
-  .next-steps-body { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.7; }
+  .report-link-block { background: #1A1814; border-radius: 4px; padding: 1.5rem; margin-top: 2rem; text-align: center; }
+  .report-link-title { font-size: 15px; font-weight: 500; color: #B8A06A; margin-bottom: 0.5rem; }
+  .report-link-sub { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.7; margin-bottom: 1.25rem; }
+  .report-btn { display: inline-block; background: #B8A06A; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 2px; font-size: 13px; font-weight: 500; letter-spacing: 0.04em; }
+  .report-url { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 0.75rem; word-break: break-all; }
+  .next-steps { margin-top: 1.5rem; padding: 1.25rem; background: #F5F1EB; border-radius: 4px; }
+  .next-steps-title { font-size: 14px; font-weight: 500; color: #1A1814; margin-bottom: 0.4rem; }
+  .next-steps-body { font-size: 13px; color: #5A5247; line-height: 1.7; }
   .footer { margin-top: 2rem; padding-top: 1rem; border-top: 0.5px solid #E8DCC8; font-size: 12px; color: #9B9186; text-align: center; }
 </style></head>
 <body>
   <div class="header"><p class="logo">PALYM<span>O</span>RF</p></div>
-  <p class="greeting">Hi ${name},<br><br>Thank you for completing the Palymorf Wealth Readiness Score. Here is a summary of your results.</p>
+  <p class="greeting">Hi ${name},<br><br>Thank you for completing the Palymorf Wealth Readiness Score. Your results are saved and accessible any time via the link below.</p>
   <div class="score-block">
     <div class="score-num">${overall_score}</div>
     <div class="score-denom">out of 100</div>
@@ -231,6 +241,13 @@ https://palymorf.com
         <strong>${v}/100</strong>
       </div>`).join('')}
   </div>
+  ${reportUrl ? `
+  <div class="report-link-block">
+    <div class="report-link-title">Your personal report link</div>
+    <div class="report-link-sub">Bookmark this — it's yours permanently. Unlock the full domain breakdown, flags, and insights for $197 any time.</div>
+    <a href="${reportUrl}" class="report-btn">View Your Report &rarr;</a>
+    <div class="report-url">${reportUrl}</div>
+  </div>` : ''}
   <div class="next-steps">
     <div class="next-steps-title">What happens next</div>
     <div class="next-steps-body">The Palymorf team will be in touch within 48 hours to discuss your score and what the Life Audit Intensive would look like for you specifically.</div>
@@ -242,7 +259,7 @@ https://palymorf.com
       });
     }
 
-    return res.status(200).json({ success: true, id: savedRecord?.id });
+    return res.status(200).json({ success: true, id: submissionId, reportUrl });
 
   } catch (err) {
     console.error('Submit error:', err);
