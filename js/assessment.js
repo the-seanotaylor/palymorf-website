@@ -165,7 +165,9 @@ async function showResults() {
   const domainScoresObj = {};
   domainScores.forEach(d => { domainScoresObj[d.id] = d.pct; });
   const answersObj = {};
-  DOMAINS.forEach(d => { answersObj[d.id] = d.questions.map((_, qi) => answers[`${d.id}_${qi}`] || 0); });
+  DOMAINS.forEach(d => {
+    answersObj[d.id] = d.questions.map((q, qi) => ({ q: q.text, a: answers[`${d.id}_${qi}`] || 0 }));
+  });
 
   try {
     await fetch('/api/submit', {

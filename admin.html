@@ -449,11 +449,15 @@
       ? Object.entries(r.answers).map(([domainId, qs]) => `
           <div class="answer-domain">
             <div class="answer-domain-title">${domainNames[domainId] || domainId}</div>
-            ${qs.map((a, i) => `
+            ${qs.map((item, i) => {
+              const qText = (typeof item === 'object' && item !== null) ? escHtml(item.q) : `Q${i + 1}`;
+              const aVal  = (typeof item === 'object' && item !== null) ? item.a : item;
+              return `
               <div class="answer-row">
-                <span class="answer-q">Q${i + 1}</span>
-                <span class="answer-v">${a}</span>
-              </div>`).join('')}
+                <span class="answer-q">${qText}</span>
+                <span class="answer-v">${aVal}</span>
+              </div>`;
+            }).join('')}
           </div>`).join('')
       : '<p style="font-size:13px;color:var(--soft)">Full answers not available.</p>';
 

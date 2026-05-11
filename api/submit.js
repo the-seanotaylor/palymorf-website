@@ -157,6 +157,91 @@ https://palymorf.com/admin
       });
     }
 
+    // ── 3. SEND CONFIRMATION TO CUSTOMER ───────
+    if (resendKey) {
+      const domainLinesCustomer = Object.entries(domain_scores)
+        .map(([k, v]) => `  ${k.charAt(0).toUpperCase() + k.slice(1)}: ${v}/100`)
+        .join('\n');
+
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${resendKey}`
+        },
+        body: JSON.stringify({
+          from: 'Palymorf <noreply@palymorf.com>',
+          to: email,
+          subject: `Your Palymorf Wealth Readiness Score — ${overall_score}/100`,
+          text: `
+Hi ${name},
+
+Thank you for completing the Palymorf Wealth Readiness Score.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+YOUR SCORE
+━━━━━━━━━━━━━━━━━━━━━━━
+Overall: ${overall_score}/100
+Tier: ${tier}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+DOMAIN BREAKDOWN
+━━━━━━━━━━━━━━━━━━━━━━━
+${domainLinesCustomer}
+
+The Palymorf team will be in touch within 48 hours to discuss your results and what the Life Audit Intensive would look like for you specifically.
+
+— The Palymorf Team
+https://palymorf.com
+          `.trim(),
+          html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><style>
+  body { font-family: Arial, sans-serif; color: #1A1814; max-width: 560px; margin: 0 auto; padding: 2rem; }
+  .header { border-bottom: 2px solid #B8A06A; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+  .logo { font-size: 20px; letter-spacing: 0.12em; color: #1A1814; margin: 0; }
+  .logo span { color: #B8A06A; }
+  .greeting { font-size: 15px; color: #5A5247; margin-bottom: 1.5rem; line-height: 1.7; }
+  .score-block { background: #F5F0E8; border-radius: 4px; padding: 1.5rem; margin-bottom: 1.5rem; text-align: center; }
+  .score-num { font-size: 56px; font-weight: 300; color: #8C6E2F; margin: 0; line-height: 1; }
+  .score-denom { font-size: 13px; color: #9B9186; margin-bottom: 4px; }
+  .score-tier { font-size: 16px; font-weight: 500; color: #1A1814; margin: 4px 0 0; }
+  .section-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #B8A06A; font-weight: 500; margin: 1.5rem 0 0.75rem; }
+  .domain-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid #E8DCC8; font-size: 14px; }
+  .domain-row:last-child { border-bottom: none; }
+  .next-steps { background: #1A1814; border-radius: 4px; padding: 1.5rem; margin-top: 2rem; color: #fff; }
+  .next-steps-title { font-size: 15px; font-weight: 500; color: #B8A06A; margin-bottom: 0.5rem; }
+  .next-steps-body { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.7; }
+  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 0.5px solid #E8DCC8; font-size: 12px; color: #9B9186; text-align: center; }
+</style></head>
+<body>
+  <div class="header"><p class="logo">PALYM<span>O</span>RF</p></div>
+  <p class="greeting">Hi ${name},<br><br>Thank you for completing the Palymorf Wealth Readiness Score. Here is a summary of your results.</p>
+  <div class="score-block">
+    <div class="score-num">${overall_score}</div>
+    <div class="score-denom">out of 100</div>
+    <div class="score-tier">${tier}</div>
+  </div>
+  <div class="section-title">Domain Breakdown</div>
+  <div>
+    ${Object.entries(domain_scores).map(([k, v]) => `
+      <div class="domain-row">
+        <span>${k.charAt(0).toUpperCase() + k.slice(1)}</span>
+        <strong>${v}/100</strong>
+      </div>`).join('')}
+  </div>
+  <div class="next-steps">
+    <div class="next-steps-title">What happens next</div>
+    <div class="next-steps-body">The Palymorf team will be in touch within 48 hours to discuss your score and what the Life Audit Intensive would look like for you specifically.</div>
+  </div>
+  <div class="footer">&copy; 2026 Palymorf LLC &nbsp;&middot;&nbsp; <a href="https://palymorf.com" style="color:#B8A06A">palymorf.com</a></div>
+</body>
+</html>`
+        })
+      });
+    }
+
     return res.status(200).json({ success: true, id: savedRecord?.id });
 
   } catch (err) {
