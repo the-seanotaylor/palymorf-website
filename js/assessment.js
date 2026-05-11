@@ -59,9 +59,10 @@ function renderQuestions(d, idx) {
 function setAnswer(key, val) {
   answers[key] = parseInt(val);
   const card = document.getElementById(`qcard_${key}`);
-  if (card) card.classList.add('answered');
+  if (card) { card.classList.add('answered'); card.classList.remove('unanswered'); }
   updateProgress();
   updateNavButtons();
+  clearValidationError();
   const domId = key.split('_')[0];
   const di = DOMAINS.findIndex(d => d.id === domId);
   if (di !== currentDomain) {
@@ -92,12 +93,67 @@ function updateNavButtons() {
   }
 }
 
-function nextDomain() { if (currentDomain < 4) renderDomain(currentDomain + 1); }
+function validateDomain(idx) {
+  const d = DOMAINS[idx];
+  const unanswered = d.questions.reduce((acc, _, qi) => {
+    if (answers[`${d.id}_${qi}`] === undefined) acc.push(qi);
+    return acc;
+  }, []);
+
+  // Clear any previous error highlights
+  d.questions.forEach((_, qi) => {
+    const card = document.getElementById(`qcard_${d.id}_${qi}`);
+    if (card) card.classList.remove('unanswered');
+  });
+
+  if (unanswered.length === 0) return true;
+
+  // Highlight unanswered cards
+  unanswered.forEach(qi => {
+    const card = document.getElementById(`qcard_${d.id}_${qi}`);
+    if (card) card.classList.add('unanswered');
+  });
+
+  // Show error message
+  const navInfo = document.getElementById('qNavInfo');
+  navInfo.textContent = `Please answer all ${unanswered.length} remaining question${unanswered.length > 1 ? 's' : ''} before continuing.`;
+  navInfo.classList.add('nav-error');
+
+  // Scroll to first unanswered question
+  const firstCard = document.getElementById(`qcard_${d.id}_${unanswered[0]}`);
+  if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  return false;
+}
+
+function clearValidationError() {
+  const navInfo = document.getElementById('qNavInfo');
+  navInfo.classList.remove('nav-error');
+}
+
+function nextDomain() {
+  if (currentDomain < 4 && validateDomain(currentDomain)) renderDomain(currentDomain + 1);
+}
 function prevDomain() { if (currentDomain > 0) renderDomain(currentDomain - 1); }
 
 // ── EMAIL CAPTURE MODAL ─────────────────────
 // Only shown AFTER all 75 questions are answered
 function showCaptureModal() {
+  // Validate current (last) domain first
+  if (!validateDomain(currentDomain)) return;
+
+  // Also check all prior domains for completeness
+  const incompleteDomains = DOMAINS.filter(d =>
+    d.questions.some((_, qi) => answers[`${d.id}_${qi}`] === undefined)
+  );
+  if (incompleteDomains.length > 0) {
+    const names = incompleteDomains.map(d => d.title).join(', ');
+    const navInfo = document.getElementById('qNavInfo');
+    navInfo.textContent = `Please complete all questions in: ${names}.`;
+    navInfo.classList.add('nav-error');
+    return;
+  }
+
   document.getElementById('assessQuiz').classList.add('hidden');
   document.getElementById('captureModal').classList.remove('hidden');
   setTimeout(() => document.getElementById('captureName').focus(), 100);

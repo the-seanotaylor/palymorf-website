@@ -311,6 +311,13 @@ a { text-decoration: none; }
 
 .q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.75rem; }
 .q-nav-info { font-size: 11px; color: rgba(255,255,255,0.22); }
+.q-nav-info.nav-error { color: #F09595; font-weight: 500; }
+.q-card.unanswered { border-color: rgba(163,45,45,0.7); background: rgba(163,45,45,0.08); animation: shake 0.35s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-4px); }
+  75%       { transform: translateX(4px); }
+}
 
 /* Results */
 .results-hero { text-align: center; padding: 2rem 0 1.5rem; }
